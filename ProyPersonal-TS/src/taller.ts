@@ -128,6 +128,7 @@ while (option != 0) {
                     console.log("");
                 }
             }
+            break;
         }
     }
 }
