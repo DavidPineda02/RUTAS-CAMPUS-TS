@@ -30,28 +30,29 @@ class Nivel {
 }
 ;
 class Camper {
-    constructor(id, nombre, tipoIdentificacion, numeroIdentificacion, nivel) {
+    constructor(id, nombre, tipoI, numeroIdentificacion, nivel) {
         this.id = id;
         this.nombre = nombre;
-        this.tipoIdentificacion = tipoIdentificacion;
+        this.tipoI = tipoI;
         this.numeroIdentificacion = numeroIdentificacion;
         this.nivel = nivel;
     }
 }
 ;
 class Contrato {
-    constructor(id) {
-        this.id = id;
+    constructor(camper, nivel, tipoContrato) {
+        this.camper = camper;
+        this.nivel = nivel;
+        this.tipoContrato = tipoContrato;
     }
 }
 ;
 const centros = [];
 const rutas = [];
 const niveles = [];
-const option = -1;
+const campers = [];
 let centroEncontrado = null;
-let rutaEncontrada = null;
-while (option != 0) {
+function centro() {
     const cantidadCentros = readline_sync_1.default.questionInt('Ingrese la cantidad de Centros que tiene Campus: ');
     console.log("");
     for (let i = 0; i < cantidadCentros; i++) {
@@ -64,12 +65,15 @@ while (option != 0) {
     }
     console.log(centros);
     console.log("");
+    return centros;
+}
+function ruta() {
     const centroIngresado = readline_sync_1.default.question('Digite el nombre del Centro en el que desea ingresar: ');
     console.log("");
     for (const centroCampus of centros) {
         if (centroCampus.nombre === centroIngresado) {
             centroEncontrado = centroCampus;
-            const cantidadRutas = readline_sync_1.default.questionInt(`Ingrese la cantidad de rutas que tiene ${centroCampus.nombre}: `);
+            const cantidadRutas = readline_sync_1.default.questionInt(`Ingrese la cantidad de Rutas que tiene el Centro ${centroCampus.nombre}: `);
             console.log("");
             for (let i = 0; i < cantidadRutas; i++) {
                 const id = i + 1;
@@ -87,34 +91,124 @@ while (option != 0) {
             });
             console.log(rutasConNombreDeCentro);
             console.log("");
-            const rutaIngresada = readline_sync_1.default.question('Digite el nombre de la Ruta en la que desea ingresar: ');
+            return rutas;
+        }
+    }
+}
+let rutaEncontrada = null;
+function nivel() {
+    const rutaIngresada = readline_sync_1.default.question('Digite el nombre de la Ruta en la que desea ingresar: ');
+    console.log("");
+    for (const rutaCampus of rutas) {
+        if (rutaCampus.nombre === rutaIngresada) {
+            rutaEncontrada = rutaCampus;
+            const cantidadNiveles = readline_sync_1.default.questionInt(`Ingrese la cantidad de Niveles que tiene la Ruta ${rutaCampus.nombre}: `);
             console.log("");
-            for (const rutaCampus of rutas) {
-                if (rutaCampus.nombre === rutaIngresada) {
-                    rutaEncontrada = rutaCampus;
-                    const cantidadNiveles = readline_sync_1.default.questionInt(`Ingrese la cantidad de niveles que tiene ${rutaCampus.nombre}: `);
+            for (let i = 0; i < cantidadNiveles; i++) {
+                const id = i + 1;
+                const nombre = readline_sync_1.default.question(`Ingrese el nombre del Nivel ${i + 1}: `);
+                console.log("");
+                const duracion = readline_sync_1.default.question(`Ingrese la duracion del Nivel ${i + 1}: `);
+                console.log("");
+                const nivel = { id, nombre, ruta: rutaCampus, duracion };
+                niveles.push(nivel);
+            }
+            const nivelesConNombreDeRutas = niveles.map(nivel => {
+                return {
+                    id: nivel.id,
+                    nombre: nivel.nombre,
+                    ruta: nivel.ruta.nombre,
+                    duracion: nivel.duracion
+                };
+            });
+            console.log(nivelesConNombreDeRutas);
+            console.log("");
+            return niveles;
+        }
+    }
+}
+let nivelEncontrado = null;
+function camper() {
+    const centroIngresado = readline_sync_1.default.question('Digite el nombre del Centro en el que desea ingresar los Campers: ');
+    console.log("");
+    for (const centroCampus of centros) {
+        if (centroCampus.nombre === centroIngresado) {
+            centroEncontrado = centroCampus;
+            const cantidadCampers = readline_sync_1.default.questionInt(`Ingrese la cantidad de Campers que tiene el Centro ${centroCampus.nombre}: `);
+            console.log('');
+            for (let i = 0; i < cantidadCampers; i++) {
+                let tipoI = "";
+                const id = i + 1;
+                const nombre = readline_sync_1.default.question('Ingrese el nombre del Camper: ');
+                const tiposIndentificacion = ['C.C', 'T.I'];
+                const tipoIdentificacion = readline_sync_1.default.keyInSelect(tiposIndentificacion, 'Ingrese el tipo de documento del Camper: ');
+                console.log("");
+                if (tipoIdentificacion === 1) {
+                    tipoI = "C.C";
+                    console.log(`Has seleccionado: ${tipoI}`);
                     console.log("");
-                    for (let i = 0; i < cantidadNiveles; i++) {
-                        const id = i + 1;
-                        const nombre = readline_sync_1.default.question(`Ingrese el nombre del Nivel ${i + 1}: `);
-                        const duracion = readline_sync_1.default.question(`Ingrese la duracion del Nivel ${i + 1}: `);
-                        console.log("");
-                        const nivel = { id, nombre, ruta: rutaCampus, duracion };
-                        niveles.push(nivel);
-                    }
-                    const nivelesConNombreDeRutas = niveles.map(nivel => {
-                        return {
-                            id: nivel.id,
-                            nombre: nivel.nombre,
-                            ruta: nivel.ruta.nombre,
-                            duracion: nivel.duracion
-                        };
-                    });
-                    console.log(nivelesConNombreDeRutas);
+                    return tipoI;
+                }
+                if (tipoIdentificacion === 2) {
+                    tipoI = "T.I";
+                    console.log(`Has seleccionado: ${tipoI}`);
+                    console.log("");
+                    return tipoI;
+                }
+                else {
+                    console.log('No seleccionaste ninguna opción.');
                     console.log("");
                 }
+                const numeroIdentificacion = readline_sync_1.default.questionInt('Ingrese el numero de documento del Camper (Sin Puntos): ');
+                console.log("");
+                let nivelIngresado;
+                do {
+                    nivelIngresado = readline_sync_1.default.question('Ingrese el nombre del Nivel en el que se encuentra el Camper: ');
+                    console.log('');
+                } while (!niveles.some(nivel => nivel.nombre === nivelIngresado));
+                const nivelEncontrado = niveles.find(nivel => nivel.nombre === nivelIngresado);
+                const camper = { id, nombre, tipoI, numeroIdentificacion, nivel: nivelEncontrado };
+                campers.push(camper);
             }
-            break;
+            const campersConNombreDeNiveles = campers.map(camper => {
+                return {
+                    id: camper.id,
+                    nombre: camper.nombre,
+                    tipoIdentificacion: camper.tipoI,
+                    numeroIdentificacion: camper.numeroIdentificacion,
+                    nivel: camper.nivel.nombre
+                };
+            });
+            console.log(campersConNombreDeNiveles);
+            console.log("");
+            return campers;
         }
+    }
+}
+const option = -1;
+while (option != 0) {
+    console.log('');
+    console.log('---------- CAMPUS ----------');
+    console.log('1. Ingresar Centros');
+    console.log('2. Ingresar Rutas');
+    console.log('3. Ingresar Niveles');
+    console.log('4. Ingresar Campers');
+    console.log('5. Ingresar Contratos');
+    console.log('----------------------------');
+    const opcion = readline_sync_1.default.questionInt('Ingresa la opcion que deseas: ');
+    console.log('');
+    switch (opcion) {
+        case (1):
+            centro();
+            break;
+        case (2):
+            ruta();
+            break;
+        case (3):
+            nivel();
+            break;
+        case (4):
+            camper();
+            break;
     }
 }
