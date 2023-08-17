@@ -45,25 +45,27 @@ class Contrato {
     }
 }
 ;
-const cantidadCentros = readline_sync_1.default.questionInt('Ingrese la cantidad de Centros que tiene Campus: ');
-console.log("");
 const centros = [];
-for (let i = 0; i < cantidadCentros; i++) {
-    const id = i + 1;
-    const nombre = readline_sync_1.default.question(`Ingrese el nombre del Centro ${i + 1}: `);
-    const ciudad = readline_sync_1.default.question(`Ingrese el nombre de la ciudad en la que se encuentra el Centro ${i + 1}: `);
-    console.log("");
-    const centro = { id, nombre, ciudad };
-    centros.push(centro);
-}
-console.log(centros);
-console.log("");
-const centroIngresado = readline_sync_1.default.question('Digite el nombre del Centro en el que desea ingresar: ');
-console.log("");
+const rutas = [];
+const niveles = [];
 const option = -1;
 let centroEncontrado = null;
-const rutas = [];
+let rutaEncontrada = null;
 while (option != 0) {
+    const cantidadCentros = readline_sync_1.default.questionInt('Ingrese la cantidad de Centros que tiene Campus: ');
+    console.log("");
+    for (let i = 0; i < cantidadCentros; i++) {
+        const id = i + 1;
+        const nombre = readline_sync_1.default.question(`Ingrese el nombre del Centro ${i + 1}: `);
+        const ciudad = readline_sync_1.default.question(`Ingrese el nombre de la ciudad en la que se encuentra el Centro ${i + 1}: `);
+        console.log("");
+        const centro = { id, nombre, ciudad };
+        centros.push(centro);
+    }
+    console.log(centros);
+    console.log("");
+    const centroIngresado = readline_sync_1.default.question('Digite el nombre del Centro en el que desea ingresar: ');
+    console.log("");
     for (const centroCampus of centros) {
         if (centroCampus.nombre === centroIngresado) {
             centroEncontrado = centroCampus;
@@ -85,6 +87,33 @@ while (option != 0) {
             });
             console.log(rutasConNombreDeCentro);
             console.log("");
+            const rutaIngresada = readline_sync_1.default.question('Digite el nombre de la Ruta en la que desea ingresar: ');
+            console.log("");
+            for (const rutaCampus of rutas) {
+                if (rutaCampus.nombre === rutaIngresada) {
+                    rutaEncontrada = rutaCampus;
+                    const cantidadNiveles = readline_sync_1.default.questionInt(`Ingrese la cantidad de niveles que tiene ${rutaCampus.nombre}: `);
+                    console.log("");
+                    for (let i = 0; i < cantidadNiveles; i++) {
+                        const id = i + 1;
+                        const nombre = readline_sync_1.default.question(`Ingrese el nombre del Nivel ${i + 1}: `);
+                        const duracion = readline_sync_1.default.question(`Ingrese la duracion del Nivel ${i + 1}: `);
+                        console.log("");
+                        const nivel = { id, nombre, ruta: rutaCampus, duracion };
+                        niveles.push(nivel);
+                    }
+                    const nivelesConNombreDeRutas = niveles.map(nivel => {
+                        return {
+                            id: nivel.id,
+                            nombre: nivel.nombre,
+                            ruta: nivel.ruta.nombre,
+                            duracion: nivel.duracion
+                        };
+                    });
+                    console.log(nivelesConNombreDeRutas);
+                    console.log("");
+                }
+            }
         }
     }
 }
